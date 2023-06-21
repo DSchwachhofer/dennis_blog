@@ -1,11 +1,20 @@
 from flask import Flask, render_template, url_for
+from flask_bootstrap import Bootstrap
+from forms import ContactForm
+
 from datetime import date
+from dotenv import load_dotenv
+import os
+
+# load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+Bootstrap(app)
+
 
 # add a current year variable which will be accessed from all sites.
-
-
 @app.context_processor
 def inject_current_year():
     return {"current_year": date.today().year}
@@ -26,6 +35,10 @@ def show_about():
     return render_template("about.html", page="about", title="About Me", subtitle="My own journey.", image_url=url_for('static', filename='images/banner-about.jpg'))
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def show_contact():
-    return render_template("contact.html", page="contact", title="Contact Me", subtitle="But be nice :)", image_url=url_for('static', filename='images/banner-contact.jpg'))
+    form = ContactForm()
+    if form.validate_on_submit():
+        print("SENDING MAIL")
+        # return "SUCCESS"
+    return render_template("contact.html", page="contact", title="Contact Me", subtitle="But be nice :)", image_url=url_for('static', filename='images/banner-contact.jpg'), form=form)
