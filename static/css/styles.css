@@ -1,3 +1,8 @@
+.banner-text {
+  text-shadow: 0px 0px 100px black;
+}
+
+
 header.masthead {
   margin-bottom: 40px;
   background: no-repeat center center;
