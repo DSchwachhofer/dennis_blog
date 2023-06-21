@@ -1,6 +1,8 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
-from forms import ContactForm
+
+from scripts.forms import ContactForm
+from scripts.email import Email_Handler
 
 from datetime import date
 from dotenv import load_dotenv
@@ -22,7 +24,15 @@ def inject_current_year():
 
 @app.route("/")
 def home():
-    return render_template("index.html", page="home", title="Dennis's Blog", subtitle="A collection of random musings.", image_url=url_for('static', filename='images/banner-home.jpg'))
+    # set up dynamic titles for home route.
+    title = request.args.get("new_title", "")
+    if not title:
+        title = "Dennis's Blog"
+    subtitle = request.args.get("new_subtitle")
+    if not subtitle:
+        subtitle = "a collection of random musings."
+
+    return render_template("index.html", page="home", title=title, subtitle=subtitle, image_url=url_for('static', filename='images/banner-home.jpg'))
 
 
 @app.route("/post<post_id>")
@@ -32,13 +42,15 @@ def show_post(post_id):
 
 @app.route("/about")
 def show_about():
-    return render_template("about.html", page="about", title="About Me", subtitle="My own journey.", image_url=url_for('static', filename='images/banner-about.jpg'))
+    return render_template("about.html", page="about", title="About Me", subtitle="my own journey.", image_url=url_for('static', filename='images/banner-about.jpg'))
 
 
 @app.route("/contact", methods=["GET", "POST"])
 def show_contact():
     form = ContactForm()
     if form.validate_on_submit():
-        print("SENDING MAIL")
-        # return "SUCCESS"
+        eh = Email_Handler()
+        eh.send_contact_mail(user_name=form.name.data,
+                             user_mail_adress=form.email.data, user_message=form.message.data)
+        return redirect(url_for("home", new_title="Mail Successfully Send", new_subtitle="i'll respond soon."))
     return render_template("contact.html", page="contact", title="Contact Me", subtitle="But be nice :)", image_url=url_for('static', filename='images/banner-contact.jpg'), form=form)
