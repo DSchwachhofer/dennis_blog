@@ -28,10 +28,12 @@
                   href="{{url_for('home')}}">Home</a>
               </li>
               <li class="nav-item m-1">
-                <a class="nav-link" href="#">Log In</a>
+                <a class="nav-link {%if page == 'login'%} active" aria-current="page{% endif %}"
+                  href="{{url_for('login')}}">Log In</a>
               </li>
               <li class="nav-item m-1">
-                <a class="nav-link" href="#">Register</a>
+                <a class="nav-link {%if page == 'register'%} active" aria-current="page{% endif %}"
+                  href="{{url_for('register')}}">Register</a>
               </li>
               <li class="nav-item m-1">
                 <a class="nav-link{%if page == 'about'%} active" aria-current="page{% endif %}"
