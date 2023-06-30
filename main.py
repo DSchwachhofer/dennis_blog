@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 
-from scripts.forms import ContactForm
+from scripts.forms import ContactForm, LoginForm, RegisterForm
 from scripts.email import Email_Handler
+from scripts.db_handler import db, Db_Handler
 
 from datetime import date
 from dotenv import load_dotenv
@@ -11,9 +12,18 @@ import os
 # load environment variables from .env file
 load_dotenv()
 
+
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///blog.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Bootstrap(app)
+db.init_app(app)
+
+# creating database
+# with app.app_context():
+#     db.create_all()
 
 
 # add a current year variable which will be accessed from all sites.
@@ -33,6 +43,20 @@ def home():
         subtitle = "a collection of random musings."
 
     return render_template("index.html", page="home", title=title, subtitle=subtitle, image_url=url_for('static', filename='images/banner-home.jpg'))
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect(url_for("home", new_title="Log In Successful", new_subtitle="welcome back."))
+    return render_template("login.html", page="login", title="Welcome Back", subtitle="please log in", image_url=url_for('static', filename='images/banner-login.jpg'), form=form)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        return redirect(url_for("home", new_title="Successfully Registered", new_subtitle="welcome to my blog."))
+    return render_template("register.html", page="register", title="Welcome to my Blog", subtitle="please register", image_url=url_for('static', filename='images/banner-register.jpg'), form=form)
 
 
 @app.route("/post<post_id>")
