@@ -12,7 +12,7 @@ import os
 # load environment variables from .env file
 load_dotenv()
 
-
+db_handler = Db_Handler()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -55,6 +55,9 @@ def login():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        print(form.data)
+        with app.app_context():
+            db_handler.register_user(form.data)
         return redirect(url_for("home", new_title="Successfully Registered", new_subtitle="welcome to my blog."))
     return render_template("register.html", page="register", title="Welcome to my Blog", subtitle="please register", image_url=url_for('static', filename='images/banner-register.jpg'), form=form)
 

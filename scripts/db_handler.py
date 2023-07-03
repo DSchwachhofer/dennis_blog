@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
 
 db = SQLAlchemy()
 
@@ -36,3 +37,8 @@ class Comment(db.Model):
 class Db_Handler():
     def __init__(self):
         pass
+    
+    def register_user(self, data):
+        new_user = User(username=data["username"], email=data["email"], password=generate_password_hash(password=data["password"], method="sha256", salt_length=8))
+        db.session.add(new_user)
+        db.session.commit()
