@@ -36,6 +36,10 @@
                   href="{{url_for('register')}}">Register</a>
               </li>
               <li class="nav-item m-1">
+                <a class="nav-link {%if page == 'new_post'%} active" aria-current="page{% endif %}"
+                  href="{{url_for('create_new_post')}}">Create New Post</a>
+              </li>
+              <li class="nav-item m-1">
                 <a class="nav-link{%if page == 'about'%} active" aria-current="page{% endif %}"
                   href="{{url_for('show_about')}}">About</a>
               </li>

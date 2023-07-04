@@ -1,7 +1,30 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
+import bleach
+from datetime import date
 
 db = SQLAlchemy()
+
+# strips invalid tags/attributes
+def strip_invalid_html(content):
+    allowed_tags = ['a', 'abbr', 'acronym', 'address', 'b', 'br', 'div', 'dl', 'dt',
+                    'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img',
+                    'li', 'ol', 'p', 'pre', 'q', 's', 'small', 'strike',
+                    'span', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th',
+                    'thead', 'tr', 'tt', 'u', 'ul']
+
+    allowed_attrs = {
+        'a': ['href', 'target', 'title'],
+        'img': ['src', 'alt', 'width', 'height'],
+    }
+
+    cleaned = bleach.clean(content,
+                           tags=allowed_tags,
+                           attributes=allowed_attrs,
+                           strip=True)
+
+    return cleaned
+
 
 class User(db.Model):
     __tablename__ = "users"
@@ -42,3 +65,22 @@ class Db_Handler():
         new_user = User(username=data["username"], email=data["email"], password=generate_password_hash(password=data["password"], method="sha256", salt_length=8))
         db.session.add(new_user)
         db.session.commit()
+
+    def create_new_post(self, data):
+        author_id = 1
+        title = data["title"]
+        subtitle = data["subtitle"]
+        image_url = data["image_url"]
+        body = strip_invalid_html(data["body"])
+        current_date = date.today().strftime("%x")
+        new_post = BlogPost(title=title, subtitle=subtitle, image_url=image_url, body=body, date=current_date, author_id=author_id)
+        db.session.add(new_post)
+        db.session.commit()
+
+    def get_all_posts(self):
+        posts = BlogPost.query.all()
+        return posts
+    
+    def get_post_from_id(self, id):
+        post = BlogPost.query.get(id)
+        return post

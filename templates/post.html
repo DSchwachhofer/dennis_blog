@@ -1,39 +1,7 @@
 {% include "header.html" %}
-<p>In today's fast-paced world filled with distractions, stress, and constant consumption, many people are turning
-  to
-  minimalism as a way to find peace, balance, and a deeper sense of meaning. Embracing minimalism goes beyond
-  simply
-  decluttering your physical space; it's a mindset that can transform your entire life. </p>
-<p>
-  Join us as we dive deeper into the art of minimalism and uncover the profound beauty that lies within
-  simplicity.
-  In
-  this blog, we will explore various aspects of minimalism, providing you with practical tips, inspirational
-  stories,
-  and thought-provoking ideas to help you create a more intentional and fulfilling life.</p>
-<p>
-  Discover the minimalist home decor trends that emphasize clean lines, open spaces, and a harmonious blend of
-  form
-  and
-  function. We will guide you through the process of decluttering your home, helping you let go of possessions
-  that
-  no
-  longer serve you and creating a living environment that sparks joy and cultivates calm.</p>
-<p>
-  Minimalism is not limited to physical possessions. It extends to other areas of life, including relationships,
-  commitments, and even digital clutter. We will delve into the art of simplifying your relationships, setting
-  boundaries, and fostering deeper connections with loved ones. You'll learn strategies to streamline your
-  schedule,
-  prioritize your time, and create space for what truly matters.</p>
-<p>
-  Together, we will navigate the challenges and rewards of adopting a minimalist lifestyle. You'll gain insights
-  into
-  mindful consumption, sustainable practices, and the art of living with less. By embracing minimalism, you can
-  create
-  a
-  life that is aligned with your values, free from excess, and filled with the things that truly bring you joy and
-  fulfillment.</p>
-<p>Author: <a href="#" class="link-body-emphasis link-opacity-75 link-underline-opacity-50"><em>Dennis
-      Schwachhofer</a></em> - 15/04/2023</p>
+{{post.body|safe}}
+<p>Author: <a href="#"
+    class="link-body-emphasis link-opacity-75 link-underline-opacity-50"><em>{{post.author.username}}</a></em> -
+  {{post.date}}</p>
 <hr>
 {%include "footer.html"%}

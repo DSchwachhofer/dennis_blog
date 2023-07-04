@@ -1,0 +1,28 @@
+{% include "header.html" %}
+<h3>New Post</h3>
+<hr>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.title.label(class="form-label") }}
+    {{ form.title(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.subtitle.label(class="form-label") }}
+    {{ form.subtitle(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.image_url.label(class="form-label") }}
+    {{ form.image_url(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.body.label(class="form-label") }}
+    {{ form.body(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.submit(class="btn btn-secondary") }}
+  </div>
+</form>
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='body') }}
+{% include "footer.html" %}
