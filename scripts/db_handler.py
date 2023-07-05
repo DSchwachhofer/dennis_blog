@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 import bleach
 from datetime import date
 
@@ -26,7 +27,7 @@ def strip_invalid_html(content):
     return cleaned
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(250), nullable=False)
@@ -84,3 +85,14 @@ class Db_Handler():
     def get_post_from_id(self, id):
         post = BlogPost.query.get(id)
         return post
+  
+    def get_user_from_id(self, id):
+        user = User.query.get(id)
+        return user
+    
+    def check_email(self, email):
+        user = User.query.filter_by(email=email).first()
+        return user
+
+    def check_password(self, user, password):
+        return check_password_hash(pwhash=user.password, password=password)

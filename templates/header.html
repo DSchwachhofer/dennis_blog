@@ -27,6 +27,7 @@
                 <a class="nav-link {%if page == 'home'%} active" aria-current="page{% endif %}"
                   href="{{url_for('home')}}">Home</a>
               </li>
+              {% if not logged_in %}
               <li class="nav-item m-1">
                 <a class="nav-link {%if page == 'login'%} active" aria-current="page{% endif %}"
                   href="{{url_for('login')}}">Log In</a>
@@ -35,10 +36,20 @@
                 <a class="nav-link {%if page == 'register'%} active" aria-current="page{% endif %}"
                   href="{{url_for('register')}}">Register</a>
               </li>
+
+              {% endif %}
+              {% if logged_in and is_admin %}
               <li class="nav-item m-1">
                 <a class="nav-link {%if page == 'new_post'%} active" aria-current="page{% endif %}"
                   href="{{url_for('create_new_post')}}">Create New Post</a>
               </li>
+              {% endif %}
+              {% if logged_in %}
+              <li class="nav-item m-1">
+                <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
+              </li>
+              {% endif %}
+
               <li class="nav-item m-1">
                 <a class="nav-link{%if page == 'about'%} active" aria-current="page{% endif %}"
                   href="{{url_for('show_about')}}">About</a>
