@@ -124,13 +124,13 @@ def show_post(post_id):
     if not image_url:
         image_url = "https://images.unsplash.com/photo-1499810631641-541e76d678a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3270&q=80"
     if current_user.is_authenticated:
-        return render_template("post.html", title=post.title, subtitle=post.subtitle, image_url=image_url, post=post, logged_in=current_user.is_authenticated)
+        return render_template("post.html", title=post.title, subtitle=post.subtitle, image_url=image_url, post=post, logged_in=current_user.is_authenticated, is_admin=check_for_admin())
     return redirect(url_for("home", new_title="Access not authorized", new_subtitle="please log in or register to view posts."))
 
 
 @app.route("/about")
 def show_about():
-    return render_template("about.html", page="about", title="About Me", subtitle="my own journey.", image_url=url_for('static', filename='images/banner-about.jpg'), logged_in=current_user.is_authenticated)
+    return render_template("about.html", page="about", title="About Me", subtitle="my own journey.", image_url=url_for('static', filename='images/banner-about.jpg'), logged_in=current_user.is_authenticated, is_admin=check_for_admin())
 
 
 @app.route("/contact", methods=["GET", "POST"])
@@ -141,4 +141,4 @@ def show_contact():
         eh.send_contact_mail(user_name=form.name.data,
                              user_mail_adress=form.email.data, user_message=form.message.data)
         return redirect(url_for("home", new_title="Mail Successfully Send", new_subtitle="i'll respond soon."))
-    return render_template("contact.html", page="contact", title="Contact Me", subtitle="But be nice :)", image_url=url_for('static', filename='images/banner-contact.jpg'), form=form, logged_in=current_user.is_authenticated)
+    return render_template("contact.html", page="contact", title="Contact Me", subtitle="But be nice :)", image_url=url_for('static', filename='images/banner-contact.jpg'), form=form, logged_in=current_user.is_authenticated, is_admin=check_for_admin())

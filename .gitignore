@@ -7,6 +7,7 @@ instance/*
 .webassets-cache
 .env
 blog_env
+blog-env
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files

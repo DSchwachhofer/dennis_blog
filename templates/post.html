@@ -1,7 +1,17 @@
 {% include "header.html" %}
 {{post.body|safe}}
-<p>Author: <a href="#"
-    class="link-body-emphasis link-opacity-75 link-underline-opacity-50"><em>{{post.author.username}}</a></em> -
-  {{post.date}}</p>
+<div class="row">
+  <div class="col-lg-8 col-md align-self-end">
+    <p>Author: <a href="#"
+        class="link-body-emphasis link-opacity-75 link-underline-opacity-50"><em>{{post.author.username}}</a></em> -
+      {{post.date}}</p>
+  </div>
+  {% if logged_in and is_admin %}
+  <div class="col-lg-4 col-md">
+    <a href="#"><button class="btn btn-primary m-1">Edit</button></a>
+    <a href="#"><button class="btn btn-primary m-1">Delete</button></a>
+  </div>
+  {% endif %}
+</div>
 <hr>
 {%include "footer.html"%}
