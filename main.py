@@ -109,13 +109,42 @@ def logout():
 def create_new_post():
     form = NewPostForm()
     if form.validate_on_submit():
-        print(form.data)
         with app.app_context():
-            db_handler.create_new_post(form.data)
+            db_handler.create_new_post(form.data, current_user.id)
         return redirect(url_for("home", new_title="New Post Was Created", new_subtitle="thank you for posting."))
     if current_user.is_authenticated and current_user.id == 1:
-        return render_template("new-post.html", title="Inspirtion", subtitle="is the art of finding magic in the ordenary" , image_url=url_for('static', filename='images/banner-new-post.jpg'), form=form, logged_in=current_user.is_authenticated)
+        return render_template("new-post.html", title="Inspiration", subtitle="is the art of finding magic in the ordenary" , image_url=url_for('static', filename='images/banner-new-post.jpg'), form=form, logged_in=current_user.is_authenticated, headline="New Post")
     return redirect(url_for("home", new_title="Access not authorized", new_subtitle="please log in with admin account to write posts."))
+
+
+@app.route("/edit-post/<post_id>", methods=["GET", "POST"])
+def edit_post(post_id):
+    form = NewPostForm()
+    post = db_handler.get_post_from_id(post_id)
+    if form.validate_on_submit():
+        # edit database data
+        with app.app_context():
+            db_handler.edit_post(form.data, post_id)
+        return redirect(url_for("show_post", post_id=post_id))
+    if current_user.is_authenticated and check_for_admin():
+        # init all form fields with data from post to edit
+        form.title.data=post.title
+        form.subtitle.data=post.subtitle
+        form.image_url.data=post.image_url
+        form.body.data=post.body
+        form.submit.label.text = "Save Edit"
+        image_url = post.image_url
+        if not image_url:
+           image_url = "https://images.unsplash.com/photo-1499810631641-541e76d678a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3270&q=80"
+        return render_template("new-post.html", form=form, image_url=image_url, title=post.title, subtitle=post.subtitle, headline="Edit Post", logged_in=current_user.is_authenticated, is_admin=check_for_admin())
+    return redirect(url_for("home", new_title="Access not authorized", new_subtitle="please log in with admin account to write posts."))
+
+@app.route("/delete-post/<post_id>")      
+def delete_post(post_id):
+    post = db_handler.get_post_from_id(post_id)
+    with app.app_context():
+        db_handler.delete_post(post_id)
+    return redirect(url_for("home", new_title=post.title, new_subtitle="successfully deleted."))
 
 @app.route("/post/<post_id>")
 def show_post(post_id):
@@ -124,7 +153,7 @@ def show_post(post_id):
     if not image_url:
         image_url = "https://images.unsplash.com/photo-1499810631641-541e76d678a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3270&q=80"
     if current_user.is_authenticated:
-        return render_template("post.html", title=post.title, subtitle=post.subtitle, image_url=image_url, post=post, logged_in=current_user.is_authenticated, is_admin=check_for_admin())
+        return render_template("post.html", title=post.title, subtitle=post.subtitle, image_url=image_url, post=post, post_id=post_id, logged_in=current_user.is_authenticated, is_admin=check_for_admin())
     return redirect(url_for("home", new_title="Access not authorized", new_subtitle="please log in or register to view posts."))
 
 

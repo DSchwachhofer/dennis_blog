@@ -67,8 +67,8 @@ class Db_Handler():
         db.session.add(new_user)
         db.session.commit()
 
-    def create_new_post(self, data):
-        author_id = 1
+    def create_new_post(self, data, author_id):
+        author_id = author_id
         title = data["title"]
         subtitle = data["subtitle"]
         image_url = data["image_url"]
@@ -76,6 +76,15 @@ class Db_Handler():
         current_date = date.today().strftime("%x")
         new_post = BlogPost(title=title, subtitle=subtitle, image_url=image_url, body=body, date=current_date, author_id=author_id)
         db.session.add(new_post)
+        db.session.commit()
+
+    def edit_post(self, data, post_id):
+        post = self.get_post_from_id(post_id)
+        post.title = data["title"]
+        post.subtitle = data["subtitle"]
+        post.image_url = data["image_url"]
+        post.body = data["body"]
+        post.date = date.today().strftime("%x")
         db.session.commit()
 
     def get_all_posts(self):
@@ -96,3 +105,8 @@ class Db_Handler():
 
     def check_password(self, user, password):
         return check_password_hash(pwhash=user.password, password=password)
+    
+    def delete_post(self, post_id):
+        post = self.get_post_from_id(post_id)
+        db.session.delete(post)
+        db.session.commit()
